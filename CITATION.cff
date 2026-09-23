@@ -1,0 +1,49 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite both the software and the paper."
+title: "Five-Step Multi-Dimensional Learnability Validation Protocol"
+abstract: >
+  Reference implementation of a five-step protocol that determines, before
+  model development begins, whether a clinical prediction target is learnable
+  from the available features, and whether a model fitted to it is fit to
+  deploy.
+type: software
+license: MIT
+authors:
+  - family-names: "Al-Ma'shumah"
+    given-names: "Fathimah"
+    orcid: "https://orcid.org/0009-0008-9261-5542"
+    affiliation: "Bina Nusantara University"
+  - family-names: "Dani"
+    given-names: "Yasi"
+    orcid: "https://orcid.org/0000-0002-6712-664X"
+    affiliation: "Bina Nusantara University"
+  - family-names: "Triyani"
+    given-names: "Yani"
+    orcid: "https://orcid.org/0000-0002-5878-4165"
+    affiliation: "Bandung Islamic University"
+  - family-names: "Suandi"
+    given-names: "Dani"
+    orcid: "https://orcid.org/0000-0001-5406-8746"
+    affiliation: "Bina Nusantara University"
+keywords:
+  - learnability validation
+  - model calibration
+  - decision curve analysis
+  - explainable artificial intelligence
+  - meningitis
+preferred-citation:
+  type: article
+  title: >
+    A Five-Step Multi-Dimensional Learnability Validation Protocol for
+    Meningitis Clinical Risk Assessment
+  journal: "Journal of Computing Theories and Applications"
+  year: 2026
+  authors:
+    - family-names: "Al-Ma'shumah"
+      given-names: "Fathimah"
+    - family-names: "Dani"
+      given-names: "Yasi"
+    - family-names: "Triyani"
+      given-names: "Yani"
+    - family-names: "Suandi"
+      given-names: "Dani"
