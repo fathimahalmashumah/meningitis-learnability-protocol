@@ -1,0 +1,47 @@
+{
+ "Diagnosis": {
+  "S1": true,
+  "S2": true,
+  "S3": true,
+  "S4": true,
+  "S5": false,
+  "BS": 0.0633,
+  "UNC": 0.2469,
+  "RES": 0.2085,
+  "maxNB": 0.5337,
+  "top_shap": "CRP_Level",
+  "top_r": 0.6228,
+  "signs": "7/10",
+  "all": false
+ },
+ "Outcome": {
+  "S1": false,
+  "S2": false,
+  "S3": false,
+  "S4": false,
+  "S5": true,
+  "BS": 0.0949,
+  "UNC": 0.0944,
+  "RES": 0.0046,
+  "maxNB": 0.0,
+  "top_shap": "Platelets",
+  "top_r": 0.0026,
+  "signs": "9/10",
+  "all": false
+ },
+ "Risk_Level": {
+  "S1": true,
+  "S2": true,
+  "S3": true,
+  "S4": true,
+  "S5": false,
+  "BS": 0.063,
+  "UNC": 0.2469,
+  "RES": 0.2059,
+  "maxNB": 0.5053,
+  "top_shap": "Glucose_Level",
+  "top_r": 0.4087,
+  "signs": "7/10",
+  "all": false
+ }
+}
