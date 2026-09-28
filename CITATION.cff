@@ -4,10 +4,12 @@ title: "Five-Step Multi-Dimensional Learnability Validation Protocol"
 abstract: >
   Reference implementation of a five-step protocol that determines, before
   model development begins, whether a clinical prediction target is learnable
-  from the available features, and whether a model fitted to it is fit to
-  deploy.
+  from the available features, and whether a model fitted to it passes five
+  complementary validation checks and is eligible for further validation.
 type: software
 license: MIT
+version: "2.0"
+date-released: "2026-09-28"
 authors:
   - family-names: "Al-Ma'shumah"
     given-names: "Fathimah"

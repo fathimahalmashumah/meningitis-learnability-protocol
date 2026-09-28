@@ -1,110 +1,86 @@
-# Five-Step Multi-Dimensional Learnability Validation Protocol
+# Five-Step Multi-Dimensional Learnability Validation Protocol (v2.0)
 
 Reference implementation and full reproduction code for:
 
 > Al-Ma'shumah, F., Dani, Y., Triyani, Y., & Suandi, D. (2026).
 > *A Five-Step Multi-Dimensional Learnability Validation Protocol for
-> Meningitis Clinical Risk Assessment.*
-> Journal of Computing Theories and Applications.
+> Meningitis Clinical Risk Assessment.* Journal of Computing Theories and Applications.
 
-## What this is
+## The protocol
 
-Clinical machine learning is usually judged on discrimination alone. A model
-that separates classes well is reported as successful, even when its
-probabilities are miscalibrated, its explanations point at variables with no
-measured association with the outcome, and nobody has checked whether the
-target can be learned from the available features at all.
+| Step | Question | Pass rule (fixed in `src/config.py`) |
+|---|---|---|
+| 1 | Does the target carry measured dependence on the features, before any model exists? | max \|Pearson r\| > 0.10 **or** max mutual information > 0.05 nats, training fold. A failure is a **warning**; the analysis continues. |
+| 2 | Do the fitted probabilities beat the prevalence model? | Brier score of the Platt-scaled LightGBM (LGBM-Cal) < uncertainty term |
+| 3 | Does acting on the probabilities beat both default strategies? | LGBM-Cal net benefit exceeds max(treat-all, treat-none) by ≥ 0.01 at some threshold in [0.05, 0.50] |
+| 4 | Does the model rely on a variable with measured association? | top mean \|SHAP\| feature satisfies the Step 1 rule |
+| 5 | Do fitted effect directions agree with the clinical literature? | ≥ 70 % of the literature-referenced logistic regression coefficient signs agree |
 
-This repository implements a protocol that tests a prediction target on five
-independent axes:
+Steps 2–5 are evaluated on the binary decision contrast of each target, with the
+clinically actionable class as the positive class: **Bacterial** (diagnosis),
+**High risk** (risk level), **Deceased** (mortality). A target that passes all five
+steps is reported as *passing the five-step validation* and is eligible for
+further, external validation; it is not declared ready for clinical use.
 
-| Step | Question it answers |
-|---|---|
-| 1 | Does the target carry measured dependence on the features, before any model exists? |
-| 2 | Do the fitted probabilities correspond to observed frequencies? |
-| 3 | Does acting on those probabilities do more good than harm? |
-| 4 | Are the variables the model relies on the ones a clinician would expect? |
-| 5 | Do the fitted effect directions agree with the clinical audit reference? |
+### Step 5 reference directions
 
-A target is *learnable* when Step 1 passes. It is *deployment-ready* only when
-all five pass.
+A direction is scored only when at least two independent published sources report it.
 
-## Data
-
-`data/meningitis.csv` is a copy of the public Kaggle dataset
-[`chantest/meningitis-classification`](https://www.kaggle.com/datasets/chantest/meningitis-classification):
-1,200 records, 14 clinical variables, three prediction targets (aetiological
-diagnosis, mortality outcome, clinical risk level). The data are synthetic in
-origin. Nothing here is patient data.
+| Feature | Bacterial / high risk (presentation) | Deceased (prognostic) |
+|---|---|---|
+| CSF WBC count | ↑ Spanos 1989; Nigrovic 2007; Alnomasy 2021 | ↓ van de Beek 2004; Bijlsma 2016; Tubiana 2020 |
+| CSF protein | ↑ Spanos 1989; Nigrovic 2007; Alnomasy 2021 | not scored (one source) |
+| CSF glucose | ↓ Spanos 1989; Alnomasy 2021 | ↓ Tubiana 2020; Chekrouni 2023 |
+| Blood WBC count | ↑ Nigrovic 2007; Alnomasy 2021 | not scored (one source) |
+| CRP | ↑ Gerdes 1998; Singh 2025 | ↑ Bijlsma 2016; Chekrouni 2023; Zhou 2025 |
+| Age | not scored | ↑ van de Beek 2004; Bijlsma 2016; Tubiana 2020; Chekrouni 2023; Zhou 2025 |
+| Pathogen present | not scored (one source) | ↑ positive culture: van de Beek 2004; Bijlsma 2016 |
+| Hemoglobin, platelets, gender | not scored | not scored |
 
 ## Reproducing the results
 
 ```bash
 git clone https://github.com/fathimahalmashumah/meningitis-learnability-protocol.git
 cd meningitis-learnability-protocol
-python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-
-python src/02_leakage_check_and_cv.py        # Step 1 on the training fold; repeated CV
-python src/03_classwise_and_ablation.py      # class-wise metrics; protocol ablation
-python src/01_five_step_protocol.py          # the five-step verdict per target
-python src/05_correlation_and_confusion.py   # correlation matrix; confusion matrices
-python src/04_generate_figures.py            # Figures 4, 5 and 9
+python src/run_all.py     # every analysis -> results/results.json (about 5 minutes)
+python src/figures.py     # Figures 1-9 at print size -> figures/
+python -m pytest tests    # consistency checks
 ```
 
-Or open `S1_meningitis_analysis.ipynb` and run it top to bottom.
+Or run `S1_meningitis_analysis.ipynb` top to bottom. All seeds are fixed at 42.
 
-All random seeds are fixed at 42. Outputs land in `results/` and `figures/`.
-
-## Which script produces which result
-
-| Manuscript item | Script |
+| Manuscript item | Source |
 |---|---|
-| Table 1, discrimination under repeated CV | `src/02_leakage_check_and_cv.py` |
-| Table 2, class-wise metrics | `src/03_classwise_and_ablation.py` |
-| Table 3, Brier decomposition | `src/05_correlation_and_confusion.py` |
-| Table 4, five-step verdict | `src/01_five_step_protocol.py` |
-| Section 4.6, ablation | `src/03_classwise_and_ablation.py` |
-| Fig. 2, correlation matrix (training fold) | `src/05_correlation_and_confusion.py` |
-| Fig. 3, confusion matrices | `src/05_correlation_and_confusion.py` |
-| Figs. 4, 5, 9 | `src/04_generate_figures.py` |
-| XOR control, Section 4.8 | `src/01_five_step_protocol.py` |
+| Section 3.2, Step 1 values; Fig. 2 | `results.json: step1`; `figures.py: fig2` |
+| Table 1, Fig. 3 (repeated CV) | `results.json: cv`; `fig3_cv.png` |
+| Table 2, Fig. 4 (class-wise, LightGBM) | `results.json: classwise`; `fig4_confusion.png` |
+| Table 3, Figs. 5–6 (mortality calibration and DCA) | `results.json: brier_mortality, dca_mortality` |
+| Table 4 (Step 5 sign audit) | `results.json: steps.*.S5` |
+| Table 5 (verdict), Section 4.7 (ablation) | `results.json: steps, ablation` |
+| Figs. 7–8 (SHAP), Fig. 9 (integer score) | `results.json: steps.*.S4, waterfall, integer_score` |
+| XOR control, Section 4.9 | `results.json: xor_control` |
 
-Figures 1, 6, 7 and 8 are the workflow diagram and the SHAP plots; the SHAP
-plots come from the notebook.
+## Changes in v2.0
 
-## Version pinning matters
+* One configuration module (`src/config.py`) and one implementation of each step
+  (`src/protocol.py`); the verdict, the ablation and every figure call the same functions.
+* Deceased is the positive class in every mortality analysis, including calibration,
+  decision curves and the integer score (v1 scripts 03–05 used Recovered).
+* One Step 5 rule: literature-referenced directions, 70 % agreement (v1 used 6/10 and
+  7/10 agreement with training-fold correlation signs in different scripts).
+* The ablation uses the final Step 1 rule (correlation **or** mutual information).
+* LightGBM is the representative model for every single-fold analysis.
+* Binary features now enter the integer score when present; the score's rounding bound
+  is reported on the probability scale.
 
-`requirements.txt` pins **XGBoost to the 2.0 series**. Tree-construction
-defaults changed in 3.x, and under XGBoost 3.x the mortality-target MCC shifts
-from +0.013 to −0.017 and the AUC from 0.548 to 0.542. Two scikit-learn APIs
-used by the original analysis were removed in 1.7 and 1.8
-(`LogisticRegression(multi_class=...)` and `CalibratedClassifierCV(cv='prefit')`);
-the code guards both by version, so it runs on current scikit-learn without
-changing behaviour.
+## Notes
 
-## Applying the protocol to your own data
-
-The protocol is model-agnostic and nothing in it is specific to meningitis.
-To reuse it, replace `data/meningitis.csv`, then edit the feature list and the
-target definitions at the top of `src/01_five_step_protocol.py`. Steps 2, 3
-and 5 need a binary decision, so multiclass targets are reduced to the binary
-contrast that carries the clinical decision; the reduction is set in the
-`BIN` dictionary in the same file.
-
-Step 1 thresholds are `tau = 0.10` for absolute correlation and `0.05` nats
-for mutual information. Both are working conventions, not derived quantities.
-
-## Limitations
-
-The dataset is synthetic and no external cohort was used, so the protocol is
-demonstrated rather than validated. The Step 1 screen uses pairwise statistics
-and will miss dependence that lives in higher-order interactions; the
-exclusive-or control in `src/01_five_step_protocol.py` shows a case where a
-correlation-only screen would have come close to rejecting a target that
-LightGBM recovers perfectly.
+The feature matrix is integer-typed, as every feature is recorded as an integer, so
+SMOTE's synthetic values are rounded down to integers. The dataset is synthetic
+(public Kaggle dataset `chantest/meningitis-classification`); no external cohort was
+used, so the protocol is demonstrated rather than validated.
 
 ## Licence
 
-MIT, see `LICENSE`. Please cite the paper if you use this work; see
-`CITATION.cff`.
+MIT, see `LICENSE`. Please cite the article if you use this work; see `CITATION.cff`.

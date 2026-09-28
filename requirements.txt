@@ -1,6 +1,5 @@
-# Pinned to the versions used for the results reported in the manuscript.
-# XGBoost must stay on the 2.0 series: tree-construction defaults changed in
-# 3.x and shift the mortality-target MCC from +0.013 to -0.017.
+# Versions used for every result reported in the article (v2.0).
+# XGBoost must stay on the 2.0 series: tree-construction defaults changed in 3.x.
 pandas==3.0.2
 numpy>=1.26
 scipy>=1.11
@@ -8,8 +7,7 @@ scikit-learn==1.8.0
 lightgbm==4.7.0
 catboost==1.2.10
 xgboost==2.0.3
-shap==0.52.0
+shap==0.51.0
 imbalanced-learn==0.14.2
 matplotlib>=3.8
-seaborn>=0.13
-packaging
+pytest
