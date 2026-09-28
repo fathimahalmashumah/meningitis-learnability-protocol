@@ -1,0 +1,788 @@
+{
+ "config": {
+  "seed": 42,
+  "tau": 0.1,
+  "mi_threshold": 0.05,
+  "dca_range": [
+   0.05,
+   0.5
+  ],
+  "nb_margin": 0.01,
+  "s5_min_share": 0.7,
+  "positive": {
+   "Diagnosis": "Bacterial",
+   "Outcome": "Deceased",
+   "Risk_Level": "High Risk"
+  },
+  "representative": "LightGBM",
+  "s5_reference": {
+   "Diagnosis": {
+    "WBC_Count": 1,
+    "Protein_Level": 1,
+    "Glucose_Level": -1,
+    "WBC_Blood_Count": 1,
+    "CRP_Level": 1
+   },
+   "Risk_Level": {
+    "WBC_Count": 1,
+    "Protein_Level": 1,
+    "Glucose_Level": -1,
+    "WBC_Blood_Count": 1,
+    "CRP_Level": 1
+   },
+   "Outcome": {
+    "Age": 1,
+    "WBC_Count": -1,
+    "Glucose_Level": -1,
+    "Pathogen_Present": 1,
+    "CRP_Level": 1
+   }
+  }
+ },
+ "split": {
+  "train": 840,
+  "val": 180,
+  "test": 180,
+  "test_deceased": 19
+ },
+ "step1": {
+  "Diagnosis": {
+   "max_abs_r": 0.8402618605817207,
+   "argmax_r": "Pathogen_Present",
+   "max_abs_rho": 0.840153963075527,
+   "max_mi": 0.564335502806264,
+   "argmax_mi": "CRP_Level",
+   "pass": true
+  },
+  "Outcome": {
+   "max_abs_r": 0.06717045666578947,
+   "argmax_r": "WBC_Count",
+   "max_abs_rho": 0.06515186256770673,
+   "max_mi": 0.012649220571953723,
+   "argmax_mi": "CRP_Level",
+   "pass": false
+  },
+  "Risk_Level": {
+   "max_abs_r": 0.5114680905565026,
+   "argmax_r": "Pathogen_Present",
+   "max_abs_rho": 0.5701512430022313,
+   "max_mi": 0.4822991793473128,
+   "argmax_mi": "Glucose_Level",
+   "pass": true
+  }
+ },
+ "xor_control": {
+  "max_abs_r": 0.1092225824947512,
+  "max_mi": 0.08041070983289367,
+  "lgbm_test_auc": 1.0,
+  "step1_pass": true
+ },
+ "xor_control_age_sex": {
+  "max_abs_r": 0.05282866607825305,
+  "max_mi": 0.02943502311455748,
+  "step1_pass": false,
+  "lgbm_test_auc": 1.0
+ },
+ "cv": {
+  "Diagnosis": {
+   "LR": {
+    "auc": 0.9071529518365415,
+    "auc_sd": 0.020891413665950268,
+    "f1": 0.7022507020574169,
+    "f1_sd": 0.02290885955043278,
+    "mcc": 0.7388519919696406,
+    "mcc_sd": 0.027882171379921016
+   },
+   "RF": {
+    "auc": 0.9690663885501278,
+    "auc_sd": 0.006894429008543657,
+    "f1": 0.7208701057906715,
+    "f1_sd": 0.03716590312558455,
+    "mcc": 0.7901272403609234,
+    "mcc_sd": 0.026998527921620885
+   },
+   "LightGBM": {
+    "auc": 0.9699121235969166,
+    "auc_sd": 0.006738328277281687,
+    "f1": 0.7078980213253274,
+    "f1_sd": 0.03677818462641142,
+    "mcc": 0.7928474487358141,
+    "mcc_sd": 0.025113761554814533
+   },
+   "CatBoost": {
+    "auc": 0.9700355201572479,
+    "auc_sd": 0.006643539935719966,
+    "f1": 0.6842568188002061,
+    "f1_sd": 0.03830405518893219,
+    "mcc": 0.7800260575733274,
+    "mcc_sd": 0.02943404302085342
+   },
+   "XGBoost": {
+    "auc": 0.9710884321543616,
+    "auc_sd": 0.006926601819080586,
+    "f1": 0.6986046031335686,
+    "f1_sd": 0.040240690630038226,
+    "mcc": 0.7874777004241916,
+    "mcc_sd": 0.027787796515843177
+   }
+  },
+  "Outcome": {
+   "LR": {
+    "auc": 0.5407621418317542,
+    "auc_sd": 0.04198041511987798,
+    "f1": 0.43026480629827757,
+    "f1_sd": 0.024199698049232794,
+    "mcc": 0.03471259905073193,
+    "mcc_sd": 0.0555804861604864
+   },
+   "RF": {
+    "auc": 0.5233637216480047,
+    "auc_sd": 0.05806097961781077,
+    "f1": 0.5024471683557655,
+    "f1_sd": 0.0324048856164285,
+    "mcc": 0.007029589241889993,
+    "mcc_sd": 0.064764853615727
+   },
+   "LightGBM": {
+    "auc": 0.5251959718633362,
+    "auc_sd": 0.06238194126965893,
+    "f1": 0.5053585469349756,
+    "f1_sd": 0.031429369207730255,
+    "mcc": 0.012689200137705563,
+    "mcc_sd": 0.06357493996147222
+   },
+   "CatBoost": {
+    "auc": 0.5220669394200402,
+    "auc_sd": 0.05466729157095143,
+    "f1": 0.5042816581120568,
+    "f1_sd": 0.029849313820712597,
+    "mcc": 0.009904215755994787,
+    "mcc_sd": 0.059984040901716495
+   },
+   "XGBoost": {
+    "auc": 0.521975483778352,
+    "auc_sd": 0.06756366872667705,
+    "f1": 0.5032307512870206,
+    "f1_sd": 0.026936193314072536,
+    "mcc": 0.008956350672858774,
+    "mcc_sd": 0.054967564875518043
+   }
+  },
+  "Risk_Level": {
+   "LR": {
+    "auc": 0.866947121685007,
+    "auc_sd": 0.023050496473171984,
+    "f1": 0.710161539141415,
+    "f1_sd": 0.02815735691105832,
+    "mcc": 0.717063730169897,
+    "mcc_sd": 0.03555596366474371
+   },
+   "RF": {
+    "auc": 0.9718253404750564,
+    "auc_sd": 0.006699674975093817,
+    "f1": 0.7450695327975189,
+    "f1_sd": 0.029930011688224723,
+    "mcc": 0.8023263482309337,
+    "mcc_sd": 0.03147291266245138
+   },
+   "LightGBM": {
+    "auc": 0.969113299823342,
+    "auc_sd": 0.006832524152712893,
+    "f1": 0.7136046692612965,
+    "f1_sd": 0.038756323954276306,
+    "mcc": 0.7943775690822237,
+    "mcc_sd": 0.02839213067424236
+   },
+   "CatBoost": {
+    "auc": 0.9705760578445484,
+    "auc_sd": 0.006747943417536232,
+    "f1": 0.7095053774453914,
+    "f1_sd": 0.04417497456821955,
+    "mcc": 0.790782239111874,
+    "mcc_sd": 0.03447512388470237
+   },
+   "XGBoost": {
+    "auc": 0.9704653082518665,
+    "auc_sd": 0.007584531012745056,
+    "f1": 0.7210861316338247,
+    "f1_sd": 0.04233672312121886,
+    "mcc": 0.8012154169857035,
+    "mcc_sd": 0.03349184804332638
+   }
+  }
+ },
+ "classwise": {
+  "Diagnosis": {
+   "model": "LightGBM",
+   "labels": [
+    "Bacterial",
+    "Unknown",
+    "Viral"
+   ],
+   "confusion": [
+    [
+     97,
+     1,
+     2
+    ],
+    [
+     7,
+     1,
+     3
+    ],
+    [
+     4,
+     3,
+     62
+    ]
+   ],
+   "precision": [
+    0.8981481481481481,
+    0.2,
+    0.9253731343283582
+   ],
+   "recall": [
+    0.97,
+    0.09090909090909091,
+    0.8985507246376812
+   ],
+   "f1": [
+    0.9326923076923077,
+    0.125,
+    0.9117647058823529
+   ],
+   "support": [
+    100,
+    11,
+    69
+   ]
+  },
+  "Outcome": {
+   "model": "LightGBM",
+   "labels": [
+    "Deceased",
+    "Recovered"
+   ],
+   "confusion": [
+    [
+     1,
+     18
+    ],
+    [
+     21,
+     140
+    ]
+   ],
+   "precision": [
+    0.045454545454545456,
+    0.8860759493670886
+   ],
+   "recall": [
+    0.05263157894736842,
+    0.8695652173913043
+   ],
+   "f1": [
+    0.04878048780487805,
+    0.877742946708464
+   ],
+   "support": [
+    19,
+    161
+   ]
+  },
+  "Risk_Level": {
+   "model": "LightGBM",
+   "labels": [
+    "High Risk",
+    "Low Risk",
+    "Moderate Risk"
+   ],
+   "confusion": [
+    [
+     91,
+     6,
+     3
+    ],
+    [
+     1,
+     66,
+     3
+    ],
+    [
+     4,
+     3,
+     3
+    ]
+   ],
+   "precision": [
+    0.9479166666666666,
+    0.88,
+    0.3333333333333333
+   ],
+   "recall": [
+    0.91,
+    0.9428571428571428,
+    0.3
+   ],
+   "f1": [
+    0.9285714285714286,
+    0.9103448275862069,
+    0.3157894736842105
+   ],
+   "support": [
+    100,
+    70,
+    10
+   ]
+  }
+ },
+ "brier_mortality": {
+  "LR": {
+   "BS": 0.23223441259951197,
+   "REL": 0.13984323209256735,
+   "RES": 0.0024394915336944326,
+   "UNC": 0.09441358024691358,
+   "BS_minus_UNC": 0.1378208323525984,
+   "BSS": -1.45975644597064
+  },
+  "RF": {
+   "BS": 0.14986444960859693,
+   "REL": 0.05326682952237656,
+   "RES": 0.0004961450251305322,
+   "UNC": 0.09441358024691358,
+   "BS_minus_UNC": 0.05545086936168335,
+   "BSS": -0.5873187863087743
+  },
+  "LightGBM": {
+   "BS": 0.17618975347870414,
+   "REL": 0.08222073843433371,
+   "RES": 0.004613404577172693,
+   "UNC": 0.09441358024691358,
+   "BS_minus_UNC": 0.08177617323179055,
+   "BSS": -0.8661484186695043
+  },
+  "CatBoost": {
+   "BS": 0.14929333050296573,
+   "REL": 0.0573747644545616,
+   "RES": 0.004108354072122187,
+   "UNC": 0.09441358024691358,
+   "BS_minus_UNC": 0.05487975025605214,
+   "BSS": -0.5812696660006831
+  },
+  "XGBoost": {
+   "BS": 0.16734102368354797,
+   "REL": 0.07244511593611415,
+   "RES": 0.0020222758990874933,
+   "UNC": 0.09441358024691358,
+   "BS_minus_UNC": 0.07292744343663439,
+   "BSS": -0.7724253570928259
+  },
+  "LGBM-Cal": {
+   "BS": 0.09485437774784877,
+   "REL": 0.005094064874527902,
+   "RES": 0.004613404577172693,
+   "UNC": 0.09441358024691358,
+   "BS_minus_UNC": 0.0004407975009351889,
+   "BSS": -0.004668793406439997
+  }
+ },
+ "lgbm_cal_range": [
+  0.100222250855849,
+  0.13350350621925133
+ ],
+ "dca_mortality": {
+  "LR": {
+   "max_excess_in_range": 0.0006172839506172895,
+   "min_nb_in_range": -0.2761904761904762
+  },
+  "RF": {
+   "max_excess_in_range": 0.001234567901234579,
+   "min_nb_in_range": -0.10959595959595962
+  },
+  "LightGBM": {
+   "max_excess_in_range": -0.006679151061173533,
+   "min_nb_in_range": -0.11111111111111112
+  },
+  "CatBoost": {
+   "max_excess_in_range": 0.0005617977528089915,
+   "min_nb_in_range": -0.09564270152505445
+  },
+  "XGBoost": {
+   "max_excess_in_range": -0.0012345679012345581,
+   "min_nb_in_range": -0.10213675213675213
+  },
+  "LGBM-Cal": {
+   "max_excess_in_range": 1.3877787807814457e-17,
+   "min_nb_in_range": -0.011610486891385767
+  }
+ },
+ "steps": {
+  "Diagnosis": {
+   "contrast": "Bacterial vs. non-bacterial",
+   "flags": {
+    "S1": true,
+    "S2": true,
+    "S3": true,
+    "S4": true,
+    "S5": true
+   },
+   "verdict": "passes",
+   "S1": {
+    "max_abs_r": 0.8402618605817207,
+    "argmax_r": "Pathogen_Present",
+    "max_abs_rho": 0.840153963075527,
+    "max_mi": 0.564335502806264,
+    "argmax_mi": "CRP_Level",
+    "pass": true
+   },
+   "S2": {
+    "BS": 0.06332857380936999,
+    "REL": 0.01875270860216813,
+    "RES": 0.2084858244278534,
+    "UNC": 0.24691358024691357,
+    "BS_minus_UNC": -0.18358500643754358,
+    "BSS": 0.7435192760720515,
+    "pass": true
+   },
+   "S3": {
+    "max_excess_nb": 0.36666666666666664,
+    "at_threshold": 0.5,
+    "pass": true
+   },
+   "S4": {
+    "top_feature": "CRP_Level",
+    "top_abs_r": 0.5601667205813909,
+    "top_mi": 0.4988592464765702,
+    "pass": true,
+    "importance": {
+     "Age": 1.1517959234673931,
+     "Gender": 0.3509170400129705,
+     "WBC_Count": 2.964342242147428,
+     "Protein_Level": 0.7000314482610025,
+     "Glucose_Level": 1.7137277700442035,
+     "Pathogen_Present": 0.09383802052016312,
+     "Hemoglobin": 0.7181131863599379,
+     "WBC_Blood_Count": 1.106246118620073,
+     "Platelets": 1.0439605533574299,
+     "CRP_Level": 6.750051029231738
+    }
+   },
+   "S5": {
+    "agree": 4,
+    "scored": 5,
+    "share": 0.8,
+    "pass": true,
+    "audit": [
+     {
+      "feature": "WBC_Count",
+      "expected": 1,
+      "fitted_coef": 0.3972010082712633,
+      "agrees": true
+     },
+     {
+      "feature": "Protein_Level",
+      "expected": 1,
+      "fitted_coef": -0.0005898315470873826,
+      "agrees": false
+     },
+     {
+      "feature": "Glucose_Level",
+      "expected": -1,
+      "fitted_coef": -0.42705613478519006,
+      "agrees": true
+     },
+     {
+      "feature": "WBC_Blood_Count",
+      "expected": 1,
+      "fitted_coef": 0.2726476130633685,
+      "agrees": true
+     },
+     {
+      "feature": "CRP_Level",
+      "expected": 1,
+      "fitted_coef": 0.6878833067941031,
+      "agrees": true
+     }
+    ],
+    "coef": {
+     "Age": -0.26242787696414804,
+     "Gender": -0.2125520742924657,
+     "WBC_Count": 0.3972010082712633,
+     "Protein_Level": -0.0005898315470873826,
+     "Glucose_Level": -0.42705613478519006,
+     "Pathogen_Present": 1.5521979352437716,
+     "Hemoglobin": -0.1046079896557594,
+     "WBC_Blood_Count": 0.2726476130633685,
+     "Platelets": 0.03033215399974382,
+     "CRP_Level": 0.6878833067941031
+    },
+    "sensitivity_single_source": {
+     "agree": 5,
+     "scored": 6,
+     "pass": true
+    }
+   }
+  },
+  "Outcome": {
+   "contrast": "Deceased vs. recovered",
+   "flags": {
+    "S1": false,
+    "S2": false,
+    "S3": false,
+    "S4": false,
+    "S5": false
+   },
+   "verdict": "does not pass",
+   "S1": {
+    "max_abs_r": 0.06717045666578947,
+    "argmax_r": "WBC_Count",
+    "max_abs_rho": 0.06515186256770673,
+    "max_mi": 0.012649220571953723,
+    "argmax_mi": "CRP_Level",
+    "pass": false
+   },
+   "S2": {
+    "BS": 0.09485437774784877,
+    "REL": 0.005094064874527902,
+    "RES": 0.004613404577172693,
+    "UNC": 0.09441358024691358,
+    "BS_minus_UNC": 0.0004407975009351889,
+    "BSS": -0.004668793406439997,
+    "pass": false
+   },
+   "S3": {
+    "max_excess_nb": 1.3877787807814457e-17,
+    "at_threshold": 0.07,
+    "pass": false
+   },
+   "S4": {
+    "top_feature": "Platelets",
+    "top_abs_r": 0.0025774670441797583,
+    "top_mi": 0.0,
+    "pass": false,
+    "importance": {
+     "Age": 0.9287313264919247,
+     "Gender": 0.6873706193394497,
+     "WBC_Count": 0.9506165951087715,
+     "Protein_Level": 0.9924296392271035,
+     "Glucose_Level": 0.9596879590391969,
+     "Pathogen_Present": 0.0,
+     "Hemoglobin": 1.15315031804296,
+     "WBC_Blood_Count": 0.9485434903413614,
+     "Platelets": 1.2587887824376074,
+     "CRP_Level": 0.6592338547540528
+    }
+   },
+   "S5": {
+    "agree": 2,
+    "scored": 5,
+    "share": 0.4,
+    "pass": false,
+    "audit": [
+     {
+      "feature": "Age",
+      "expected": 1,
+      "fitted_coef": 0.014950639215783585,
+      "agrees": true
+     },
+     {
+      "feature": "WBC_Count",
+      "expected": -1,
+      "fitted_coef": -0.1952681856356028,
+      "agrees": true
+     },
+     {
+      "feature": "Glucose_Level",
+      "expected": -1,
+      "fitted_coef": 0.061717875572226966,
+      "agrees": false
+     },
+     {
+      "feature": "Pathogen_Present",
+      "expected": 1,
+      "fitted_coef": -0.6838681173135307,
+      "agrees": false
+     },
+     {
+      "feature": "CRP_Level",
+      "expected": 1,
+      "fitted_coef": -0.15585123249493466,
+      "agrees": false
+     }
+    ],
+    "coef": {
+     "Age": 0.014950639215783585,
+     "Gender": 0.11979889898808276,
+     "WBC_Count": -0.1952681856356028,
+     "Protein_Level": -0.1362375339760454,
+     "Glucose_Level": 0.061717875572226966,
+     "Pathogen_Present": -0.6838681173135307,
+     "Hemoglobin": -0.8965752078969659,
+     "WBC_Blood_Count": -0.14438277309971048,
+     "Platelets": -0.23055176268933072,
+     "CRP_Level": -0.15585123249493466
+    },
+    "sensitivity_single_source": {
+     "agree": 5,
+     "scored": 9,
+     "pass": false
+    }
+   }
+  },
+  "Risk_Level": {
+   "contrast": "High risk vs. not high risk",
+   "flags": {
+    "S1": true,
+    "S2": true,
+    "S3": true,
+    "S4": true,
+    "S5": true
+   },
+   "verdict": "passes",
+   "S1": {
+    "max_abs_r": 0.5114680905565026,
+    "argmax_r": "Pathogen_Present",
+    "max_abs_rho": 0.5701512430022313,
+    "max_mi": 0.4822991793473128,
+    "argmax_mi": "Glucose_Level",
+    "pass": true
+   },
+   "S2": {
+    "BS": 0.0629923441534668,
+    "REL": 0.00807713461380277,
+    "RES": 0.20590567510857363,
+    "UNC": 0.24691358024691357,
+    "BS_minus_UNC": -0.18392123609344677,
+    "BSS": 0.7448810061784594,
+    "pass": true
+   },
+   "S3": {
+    "max_excess_nb": 0.3722222222222222,
+    "at_threshold": 0.5,
+    "pass": true
+   },
+   "S4": {
+    "top_feature": "Glucose_Level",
+    "top_abs_r": 0.4308618045796622,
+    "top_mi": 0.4368887433660229,
+    "pass": true,
+    "importance": {
+     "Age": 1.2506500276512134,
+     "Gender": 0.1424656929739655,
+     "WBC_Count": 3.335621025921162,
+     "Protein_Level": 1.93112707503149,
+     "Glucose_Level": 4.353477715848309,
+     "Pathogen_Present": 0.05730815519087973,
+     "Hemoglobin": 0.3622361827451355,
+     "WBC_Blood_Count": 0.682748870769957,
+     "Platelets": 0.7554142878932187,
+     "CRP_Level": 1.8129362355103225
+    }
+   },
+   "S5": {
+    "agree": 4,
+    "scored": 5,
+    "share": 0.8,
+    "pass": true,
+    "audit": [
+     {
+      "feature": "WBC_Count",
+      "expected": 1,
+      "fitted_coef": 0.7299350040784254,
+      "agrees": true
+     },
+     {
+      "feature": "Protein_Level",
+      "expected": 1,
+      "fitted_coef": 0.4325718649022353,
+      "agrees": true
+     },
+     {
+      "feature": "Glucose_Level",
+      "expected": -1,
+      "fitted_coef": -0.2748687808712034,
+      "agrees": true
+     },
+     {
+      "feature": "WBC_Blood_Count",
+      "expected": 1,
+      "fitted_coef": 0.15773903619452545,
+      "agrees": true
+     },
+     {
+      "feature": "CRP_Level",
+      "expected": 1,
+      "fitted_coef": -0.09267083069564072,
+      "agrees": false
+     }
+    ],
+    "coef": {
+     "Age": -0.08950899774704763,
+     "Gender": 0.14536567417459545,
+     "WBC_Count": 0.7299350040784254,
+     "Protein_Level": 0.4325718649022353,
+     "Glucose_Level": -0.2748687808712034,
+     "Pathogen_Present": 1.025648002752083,
+     "Hemoglobin": 0.3764143484465065,
+     "WBC_Blood_Count": 0.15773903619452545,
+     "Platelets": -0.15703009100533152,
+     "CRP_Level": -0.09267083069564072
+    },
+    "sensitivity_single_source": {
+     "agree": 5,
+     "scored": 6,
+     "pass": true
+    }
+   }
+  }
+ },
+ "waterfall": {
+  "caseA_p": 0.9686188080169278,
+  "caseB_p": 0.00014593474739419817
+ },
+ "integer_score": {
+  "weights": {
+   "Age": 0,
+   "Gender": 1,
+   "WBC_Count": -1,
+   "Protein_Level": -1,
+   "Glucose_Level": 0,
+   "Pathogen_Present": -4,
+   "Hemoglobin": -5,
+   "WBC_Blood_Count": -1,
+   "Platelets": -1,
+   "CRP_Level": -1
+  },
+  "beta_star": 0.8965752078969659,
+  "sum_abs_beta": 2.639202226882214,
+  "rounding_bound_prob": 0.2241438019742415,
+  "auc": 0.48365478914678,
+  "cutoff": -1.0,
+  "sens": 0.3684210526315789,
+  "spec": 0.7950310559006211,
+  "range": [
+   -8,
+   1
+  ],
+  "auc_lr_prob": 0.5289310232101994,
+  "auc_lgbm": 0.4717227852239293
+ },
+ "ablation": {
+  "without_S1": [],
+  "without_S2": [],
+  "without_S3": [],
+  "without_S4": [],
+  "without_S5": [],
+  "only_S1": [],
+  "only_S2": [],
+  "only_S3": [],
+  "only_S4": [],
+  "only_S5": [],
+  "discrimination_only": [
+   "Outcome"
+  ],
+  "discrimination_only_any_model": [
+   "Outcome"
+  ]
+ }
+}
